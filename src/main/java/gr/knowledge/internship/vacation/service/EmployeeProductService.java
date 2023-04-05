@@ -11,6 +11,7 @@ import gr.knowledge.internship.vacation.service.mapper.BonusMapper;
 import gr.knowledge.internship.vacation.service.mapper.EmployeeProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +27,12 @@ public class EmployeeProductService {
     @Autowired
     private EmployeeProductRepository employeeProductRepository;
 
+
     private EmployeeProductMapper employeeProductMapper;
 
     private static final String NotFoundExceptionMessage = "Not Found";
 
+    @Autowired
     public EmployeeProductService(EmployeeProductRepository employeeProductRepository, EmployeeProductMapper employeeProductMapper) {
         this.employeeProductRepository = employeeProductRepository;
         this.employeeProductMapper = employeeProductMapper;

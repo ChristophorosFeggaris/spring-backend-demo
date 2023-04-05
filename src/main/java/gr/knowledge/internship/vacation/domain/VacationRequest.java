@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -35,6 +36,11 @@ public class VacationRequest implements Serializable {
     @NotNull
     @Column(name="end_date")
     LocalDate endDate;
+
+    @NotNull
+    @Size(max = 20)
+    @Column(name="status")
+    String status;
 
     @NotNull
     @Column(name="days")

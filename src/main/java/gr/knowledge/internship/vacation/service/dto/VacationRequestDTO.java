@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -20,5 +21,7 @@ public class VacationRequestDTO implements Serializable {
 
     LocalDate endDate;
 
+    @Size(max=20)
+    String status;
     Integer days;
 }
