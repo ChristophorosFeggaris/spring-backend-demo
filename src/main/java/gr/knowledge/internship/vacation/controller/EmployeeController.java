@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Log4j2
 @RequestMapping("/api")
@@ -29,6 +31,21 @@ public class EmployeeController {
         log.debug("Rest request to get Employee by id : {}",id);
         EmployeeDTO result = employeeService.getById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/getallemployees")
+    public List<EmployeeDTO> getAllEmployees(){
+        return employeeService.getAllEmployees();
+    }
+
+    @PutMapping("/updateemployee/{id}")
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO){
+        return employeeService.updateEmployee(employeeDTO, id);
+    }
+
+    @DeleteMapping("/deleteemployee/{id}")
+    public void deleteEmployee(@PathVariable Long id){
+        employeeService.deleteEmployee(id);
     }
 
 }
