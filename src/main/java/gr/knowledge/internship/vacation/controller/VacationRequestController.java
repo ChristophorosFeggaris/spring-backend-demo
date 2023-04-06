@@ -1,5 +1,6 @@
 package gr.knowledge.internship.vacation.controller;
 
+import gr.knowledge.internship.vacation.domain.Request4Vac;
 import gr.knowledge.internship.vacation.service.VacationRequestService;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
 import gr.knowledge.internship.vacation.service.dto.VacationRequestDTO;
@@ -50,4 +51,10 @@ public class VacationRequestController {
     public void deleteVacRequest(@PathVariable Long id){
         vacationRequestService.deleteRequest(id);
     }
+
+    @PostMapping("/askforvacation")
+    public VacationRequestDTO ask4Vacation(@RequestBody Request4Vac request){
+        return vacationRequestService.askForVacation(request);
+    }
+
 }

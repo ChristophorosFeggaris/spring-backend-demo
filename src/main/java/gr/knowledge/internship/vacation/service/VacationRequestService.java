@@ -1,8 +1,8 @@
 package gr.knowledge.internship.vacation.service;
 
-import gr.knowledge.internship.vacation.domain.Bonus;
-import gr.knowledge.internship.vacation.domain.VacationRequest;
+import gr.knowledge.internship.vacation.domain.*;
 import gr.knowledge.internship.vacation.exception.NotFoundException;
+import gr.knowledge.internship.vacation.repository.EmployeeRepository;
 import gr.knowledge.internship.vacation.repository.VacationRequestRepository;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
 import gr.knowledge.internship.vacation.service.dto.VacationRequestDTO;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,10 @@ public class VacationRequestService {
     @Autowired
     private VacationRequestRepository vacationRequestRepository;
 
+    @Autowired
     private VacationRequestMapper vacationRequestMapper;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public VacationRequestService(VacationRequestRepository vacationRequestRepository, VacationRequestMapper vacationRequestMapper) {
         this.vacationRequestRepository = vacationRequestRepository;
@@ -80,6 +85,29 @@ public class VacationRequestService {
     @Transactional
     public void deleteRequest(Long id){
         vacationRequestRepository.deleteById(id);
+    }
+
+    //task2
+    @Transactional
+    public VacationRequestDTO askForVacation(Request4Vac request){
+
+        Employee employee = employeeRepository.findById(request.getEmployeeId()).orElseThrow();
+
+        Long requestDays = ChronoUnit.DAYS.between(request.getStartDate(),request.getEndDate()) + 1 - request.getHoliday();
+
+        if(employee.getVacationDays() < requestDays){
+            throw new RuntimeException("Not enough remaining days");
+        }
+
+        VacationRequest vacationRequest = new VacationRequest();
+        vacationRequest.setVacreqEmployee(employee);
+        vacationRequest.setStartDate(request.getStartDate());
+        vacationRequest.setEndDate(request.getEndDate());
+        vacationRequest.setDays(request.getHoliday());
+        vacationRequest.setStatus(String.valueOf(RequestStatus.PENDING));
+        vacationRequestRepository.save(vacationRequest);
+
+        return vacationRequestMapper.toDTO(vacationRequest);
     }
 
 }
