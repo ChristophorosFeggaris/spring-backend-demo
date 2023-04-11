@@ -70,7 +70,7 @@ public class VacationRequestController {
     }
 
     @PutMapping("/updatevacation")
-    public VacationRequestDTO updateVacationRequest(@RequestParam Long vacationId, UpdatedVacation updatedVacation){
+    public VacationRequestDTO updateVacationRequest(@RequestBody UpdatedVacation updatedVacation){
         return vacationRequestService.updateVacationRequest(updatedVacation.getVacationId(), updatedVacation.getStatus());
     }
 }

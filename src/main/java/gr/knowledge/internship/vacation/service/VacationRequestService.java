@@ -128,6 +128,8 @@ public class VacationRequestService {
             Employee employee = vacationRequest.getVacreqEmployee();
             employee.setVacationDays(employee.getVacationDays() - vacationRequest.getDays());
             vacationRequest.setStatus("approved");
+            vacationRequestRepository.save(vacationRequest);
+            employeeRepository.save(employee);
         } else if (vacationRequest.getStatus().equalsIgnoreCase("rejected")){
             vacationRequest.setStatus("rejected");
         }
