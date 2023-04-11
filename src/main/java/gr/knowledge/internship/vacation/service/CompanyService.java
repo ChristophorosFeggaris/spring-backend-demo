@@ -1,11 +1,14 @@
 package gr.knowledge.internship.vacation.service;
 
 import gr.knowledge.internship.vacation.domain.Company;
+import gr.knowledge.internship.vacation.domain.Employee;
 import gr.knowledge.internship.vacation.exception.NotFoundException;
 import gr.knowledge.internship.vacation.repository.CompanyRepository;
+import gr.knowledge.internship.vacation.repository.EmployeeRepository;
 import gr.knowledge.internship.vacation.service.dto.CompanyDTO;
 import gr.knowledge.internship.vacation.service.mapper.CompanyMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +22,13 @@ import java.util.Optional;
 @Log4j2
 public class CompanyService {
 
+    @Autowired
     private final CompanyRepository companyRepository;
 
+    @Autowired
+    private  EmployeeRepository employeeRepository;
 
+    @Autowired
     private final CompanyMapper companyMapper;
 
     private static final String NotFoundExceptionMessage = "Not Found";
@@ -82,6 +89,16 @@ public class CompanyService {
 
             return companyMapper.toDto(updatedCompany);
 
+    }
+
+    @Transactional
+    public double getMonthlyExpensesByCompany(Long companyId){
+        List<Employee> employees = employeeRepository.montlyExpense(companyId);
+        Double totalSalary = 0.0;
+        for(Employee employee:employees){
+            totalSalary += employee.getSalary();
+        }
+        return totalSalary;
     }
 
     //delete company

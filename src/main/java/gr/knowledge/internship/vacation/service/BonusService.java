@@ -1,9 +1,12 @@
 package gr.knowledge.internship.vacation.service;
 
 import gr.knowledge.internship.vacation.domain.Bonus;
+import gr.knowledge.internship.vacation.domain.Company;
 import gr.knowledge.internship.vacation.domain.Employee;
 import gr.knowledge.internship.vacation.exception.NotFoundException;
 import gr.knowledge.internship.vacation.repository.BonusRepository;
+import gr.knowledge.internship.vacation.repository.CompanyRepository;
+import gr.knowledge.internship.vacation.repository.EmployeeRepository;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
 import gr.knowledge.internship.vacation.service.dto.EmployeeDTO;
 import gr.knowledge.internship.vacation.service.mapper.BonusMapper;
@@ -24,6 +27,13 @@ public class BonusService {
     @Autowired
     private BonusRepository bonusRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
     private BonusMapper bonusMapper;
 
     private static final String NotFoundExceptionMessage = "Not Found";
@@ -32,6 +42,37 @@ public class BonusService {
         this.bonusRepository = bonusRepository;
         this.bonusMapper = bonusMapper;
     }
+
+
+
+    public enum BonusRate {
+        winter("winter", 1.3),
+        autumn("autumn", 0.4),
+        spring("spring", 0.6),
+        summer("summer", 0.7);
+
+        private final String season;
+        private final Double rate;
+
+        BonusRate(String season, Double rate) {
+            this.season = season;
+            this.rate = rate;
+        }
+
+        public String getSeason() {
+            return season;
+        }
+
+        public Double getRate() {
+            return rate;
+        }
+    }
+
+    public Double getBonus(Double salary, String season){
+        Double rate = BonusRate.valueOf(season).getRate();
+        return salary * rate;
+    }
+
 
     @Transactional
     public BonusDTO save(BonusDTO bonusDTO){
@@ -75,6 +116,21 @@ public class BonusService {
             throw new NotFoundException("The bonus "+bonus+"does not found");
         }
         return bonusMapper.toDTO(bonus);
+    }
+
+    public List<BonusDTO> getBonusEmployeeByCompany(Long companyId, String season){
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new IllegalArgumentException("Invalid company ID"));
+        List<Employee> employees = employeeRepository.montlyExpense(companyId);
+        List<Bonus> bonuses  = new ArrayList<>();
+        for(Employee employee : employees){
+            Bonus bonus = new Bonus();
+            bonus.setBonusEmployee(employee);
+            bonus.setAmount(getBonus(employee.getSalary(), season));
+            bonus.setBonusCompany(company);
+            bonuses.add(bonus);
+        }
+        List<Bonus> allBonuses = bonusRepository.saveAll(bonuses);
+        return  bonusMapper.toDTOList(allBonuses);
     }
 
     @Transactional

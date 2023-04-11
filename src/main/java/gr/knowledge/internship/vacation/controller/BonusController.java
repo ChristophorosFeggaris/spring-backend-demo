@@ -1,5 +1,6 @@
 package gr.knowledge.internship.vacation.controller;
 
+import gr.knowledge.internship.vacation.domain.Bonus;
 import gr.knowledge.internship.vacation.service.BonusService;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
 import gr.knowledge.internship.vacation.service.dto.EmployeeDTO;
@@ -48,5 +49,15 @@ public class BonusController {
     @DeleteMapping("/deletebonus/{id}")
     public void deleteBonus(@PathVariable Long id){
         bonusService.deleteBonus(id);
+    }
+
+    @GetMapping("/getbonussalary")
+    public Double getBonusSalary(@RequestParam Double salary,@RequestParam String season){
+        return bonusService.getBonus(salary, season);
+    }
+
+    @GetMapping("/bonusforeachemployee")
+    public List<BonusDTO> getBonusEmployeeByCompany(@RequestParam Long companyId, @RequestParam String season){
+        return bonusService.getBonusEmployeeByCompany(companyId, season);
     }
 }

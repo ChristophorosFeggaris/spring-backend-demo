@@ -1,5 +1,6 @@
 package gr.knowledge.internship.vacation.controller;
 
+import gr.knowledge.internship.vacation.domain.Product;
 import gr.knowledge.internship.vacation.service.ProductService;
 import gr.knowledge.internship.vacation.service.dto.EmployeeDTO;
 import gr.knowledge.internship.vacation.service.dto.ProductDTO;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Log4j2
@@ -48,5 +50,10 @@ public class ProductController {
     @DeleteMapping("/deleteproduct/{id}")
     public void deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
+    }
+
+    @GetMapping("/productsbycompany/{companyId}")
+    public Map<String, List<Product>> getProductsByCompany(@PathVariable Long companyId){
+        return productService.getProductsPerCompany(companyId);
     }
 }

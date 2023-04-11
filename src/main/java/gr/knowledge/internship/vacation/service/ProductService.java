@@ -1,8 +1,11 @@
 package gr.knowledge.internship.vacation.service;
 
 import gr.knowledge.internship.vacation.domain.Employee;
+import gr.knowledge.internship.vacation.domain.EmployeeProduct;
 import gr.knowledge.internship.vacation.domain.Product;
 import gr.knowledge.internship.vacation.exception.NotFoundException;
+import gr.knowledge.internship.vacation.repository.EmployeeProductRepository;
+import gr.knowledge.internship.vacation.repository.EmployeeRepository;
 import gr.knowledge.internship.vacation.repository.ProductRepository;
 import gr.knowledge.internship.vacation.service.dto.EmployeeDTO;
 import gr.knowledge.internship.vacation.service.dto.ProductDTO;
@@ -12,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -23,6 +24,12 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeProductRepository employeeProductRepository;
 
     private ProductMapper productMapper;
 
@@ -78,8 +85,27 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Long id){
+    public Map<String, List<Product>> getProductsPerCompany(Long companyId){
+        Map<String, List<Product>> productsMap = new HashMap<>();
+        List<Employee> employees = employeeRepository.employeesByCompany(companyId);
+        for(Employee employee : employees){
+            List<EmployeeProduct> employeeProducts = employeeProductRepository.employeeProductByEmployeeId(employee.getId());
+            List<Product> products = new ArrayList<>();
+            for(EmployeeProduct employeeProduct : employeeProducts){
+                Product product = employeeProduct.getProduct();
+                products.add(product);
+            }
+            if(!products.isEmpty()){
+                String employeeName = employee.getName()+employee.getSurName();
+                productsMap.put(employeeName, products);
+            }
+        }
 
+        return productsMap;
+    }
+
+    @Transactional
+    public void deleteProduct(Long id){
         productRepository.deleteById(id);
 
     }

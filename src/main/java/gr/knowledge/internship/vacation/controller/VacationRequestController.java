@@ -1,15 +1,22 @@
 package gr.knowledge.internship.vacation.controller;
 
 import gr.knowledge.internship.vacation.domain.Request4Vac;
+import gr.knowledge.internship.vacation.domain.RequestByCompany;
+import gr.knowledge.internship.vacation.domain.RequestStatus;
+import gr.knowledge.internship.vacation.domain.UpdatedVacation;
 import gr.knowledge.internship.vacation.service.VacationRequestService;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
 import gr.knowledge.internship.vacation.service.dto.VacationRequestDTO;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.atomic.LongAccumulator;
 
 @RestController
 @Log4j2
@@ -57,4 +64,13 @@ public class VacationRequestController {
         return vacationRequestService.askForVacation(request);
     }
 
+    @PostMapping("/vacrequestbycompany")
+    public List<VacationRequestDTO> getRequestByCompany(@RequestBody RequestByCompany rqCompany){
+        return vacationRequestService.requestByCompany(rqCompany.getCompanyId(), rqCompany.getStatus(), rqCompany.getStartDate(), rqCompany.getEndDate());
+    }
+
+    @PutMapping("/updatevacation")
+    public VacationRequestDTO updateVacationRequest(@RequestParam Long vacationId, UpdatedVacation updatedVacation){
+        return vacationRequestService.updateVacationRequest(updatedVacation.getVacationId(), updatedVacation.getStatus());
+    }
 }

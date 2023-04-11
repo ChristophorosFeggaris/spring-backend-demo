@@ -30,7 +30,7 @@ public class Bonus implements Serializable {
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", referencedColumnName = "id")
-    private Employee bonusCompany;
+    private Company bonusCompany;
 
     @NotNull
     @Column(name="amount")

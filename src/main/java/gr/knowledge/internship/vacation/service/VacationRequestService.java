@@ -2,6 +2,7 @@ package gr.knowledge.internship.vacation.service;
 
 import gr.knowledge.internship.vacation.domain.*;
 import gr.knowledge.internship.vacation.exception.NotFoundException;
+import gr.knowledge.internship.vacation.repository.CompanyRepository;
 import gr.knowledge.internship.vacation.repository.EmployeeRepository;
 import gr.knowledge.internship.vacation.repository.VacationRequestRepository;
 import gr.knowledge.internship.vacation.service.dto.BonusDTO;
@@ -9,6 +10,7 @@ import gr.knowledge.internship.vacation.service.dto.VacationRequestDTO;
 import gr.knowledge.internship.vacation.service.mapper.VacationRequestMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,9 @@ public class VacationRequestService {
 
     @Autowired
     private VacationRequestRepository vacationRequestRepository;
+
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Autowired
     private VacationRequestMapper vacationRequestMapper;
@@ -107,6 +112,25 @@ public class VacationRequestService {
         vacationRequest.setStatus(String.valueOf(RequestStatus.PENDING));
         vacationRequestRepository.save(vacationRequest);
 
+        return vacationRequestMapper.toDTO(vacationRequest);
+    }
+
+    public List<VacationRequestDTO> requestByCompany( Long companyId,
+                                                      String status,
+                                                       LocalDate startDate,
+                                                      LocalDate endDate){
+        return vacationRequestRepository.vacRequestByCompany(companyId, status, startDate, endDate);
+    }
+
+    public VacationRequestDTO updateVacationRequest(Long vacationId, String status){
+        VacationRequest vacationRequest = vacationRequestRepository.findById(vacationId).orElseThrow(() -> new NotFoundException("The id does not found!"));
+        if(vacationRequest.getStatus().equalsIgnoreCase("approved")){
+            Employee employee = vacationRequest.getVacreqEmployee();
+            employee.setVacationDays(employee.getVacationDays() - vacationRequest.getDays());
+            vacationRequest.setStatus("approved");
+        } else if (vacationRequest.getStatus().equalsIgnoreCase("rejected")){
+            vacationRequest.setStatus("rejected");
+        }
         return vacationRequestMapper.toDTO(vacationRequest);
     }
 
