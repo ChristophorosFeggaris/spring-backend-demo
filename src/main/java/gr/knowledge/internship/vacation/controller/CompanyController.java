@@ -23,6 +23,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
+    @CrossOrigin
     @PostMapping("/newcompany")
     public ResponseEntity<CompanyDTO> save(@RequestBody CompanyDTO companyDTO){
         log.debug("Rest request to save Company : {}",companyDTO);
@@ -30,12 +31,14 @@ public class CompanyController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    @CrossOrigin
     @GetMapping("/company/{id}")
     public CompanyDTO getCompanyById(@PathVariable Long id){
         return companyService.getById(id);
     }
 
 
+    @CrossOrigin
     @GetMapping("/company")
     public List<CompanyDTO> getAllCompanies(){
         return companyService.getAllCompanies();
@@ -47,11 +50,13 @@ public class CompanyController {
         return companyService.updateCompany(companyDTO, id);
     }
 
+    @CrossOrigin
     @DeleteMapping("/deletecompany/{id}")
     public void deleteCompany(@PathVariable Long id){
         companyService.deleteCompany(id);
     }
 
+    @CrossOrigin
     @GetMapping("/getmonthlyexpensebycompany/{companyId}")
     public double getMonltyExpense(@PathVariable Long companyId){
         return companyService.getMonthlyExpensesByCompany(companyId);

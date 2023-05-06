@@ -1,5 +1,6 @@
 package gr.knowledge.internship.vacation.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import gr.knowledge.internship.vacation.domain.Company;
 import lombok.Data;
 

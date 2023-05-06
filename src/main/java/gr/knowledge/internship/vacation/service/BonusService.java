@@ -73,7 +73,6 @@ public class BonusService {
         return salary * rate;
     }
 
-
     @Transactional
     public BonusDTO save(BonusDTO bonusDTO){
         log.debug("Request to save Bonus : {}",bonusDTO);
@@ -118,6 +117,7 @@ public class BonusService {
         return bonusMapper.toDTO(bonus);
     }
 
+    @Transactional
     public List<BonusDTO> getBonusEmployeeByCompany(Long companyId, String season){
         Company company = companyRepository.findById(companyId).orElseThrow(() -> new IllegalArgumentException("Invalid company ID"));
         List<Employee> employees = employeeRepository.montlyExpense(companyId);

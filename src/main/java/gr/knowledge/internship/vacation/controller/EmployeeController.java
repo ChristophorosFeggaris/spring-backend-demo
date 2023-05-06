@@ -19,7 +19,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @PostMapping("/employee")
+    @PostMapping("/newemployee")
     public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO){
         log.debug("Rest request to save Company : {}",employeeDTO);
         EmployeeDTO result = employeeService.save(employeeDTO);
