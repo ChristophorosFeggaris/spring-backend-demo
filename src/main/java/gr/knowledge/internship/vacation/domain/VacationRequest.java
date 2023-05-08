@@ -1,5 +1,6 @@
 package gr.knowledge.internship.vacation.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,14 +22,14 @@ public class VacationRequest implements Serializable {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacation_request_generator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "vacation_request_generator")
     @SequenceGenerator(name = "vacation_request_generator", sequenceName = "vacation_request_seq")
     @Column(name = "id")
     Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JsonBackReference
     private Employee vacreqEmployee;
 
     @NotNull
